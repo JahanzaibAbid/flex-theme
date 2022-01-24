@@ -80,7 +80,7 @@
                   </span>
                 </p>
                 {% if item.original_line_price > item.final_line_price %}
-                  <s class="original-price">
+                  <s>
                     <span class="money">
                       {% render 'price-element', price: item.original_price %}
                     </span>
@@ -97,7 +97,8 @@
 
             {% if item.line_level_discount_allocations.size < 1 %}
             <div class="ajax-cart__price price">
-              <span class="money {% if item.original_price < item.variant.compare_at_price %}sale{% endif %}">
+              <div class = "ajax-discount-price"></div>
+              <span class="money ajax-total-price{% if item.original_price < item.variant.compare_at_price %}sale{% endif %}">
                 {% render 'price-element', price: item.original_line_price %}
               </span>
               {% if item.original_price < item.variant.compare_at_price %}
@@ -125,9 +126,9 @@
           </div>
           <div class="ajax-cart__right-content media-right">
             <a class="ajax-cart__delete" data-ajax-cart-delete data-cart-item-key="{{ item.key }}" href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" title="{{ 'cart.general.remove' | t }}" >
-              <button class="close" aria-label="close">
+              <span class="close" aria-label="close">
                 {% render 'icon', name: 'x' %}
-              </button>
+              </span>
             </a>
           </div>
         </div>
@@ -156,7 +157,9 @@
         <div class="ajax-cart__row-description">
           <span>{{ 'layout.general.subtotal' | t }}:</span>
         </div>
-        <span class="money">
+         <span class="ajax-discount-subtotal">
+        </span>
+        <span class="money ajax-original-subtotal">
           {% render 'price-element', price: cart.total_price %}
         </span>
       </div>
@@ -201,9 +204,13 @@
           {{ settings.cart_message }}
         </div>
       {% endif %}
-
+      
+		{% comment %} Discount code Field {% endcomment %}
+       {% include 'ajax_cart_discount_code'%}
+      
       {% comment %} Checkout {% endcomment %}
       <div class="ajax-cart__button-wrapper text-align-center">
+       
         {% if settings.go_to_checkout %}
           <button type="submit" name="checkout" class="ajax-cart__button button--add-to-cart button">
             {% if settings.show_lock_icon %}
