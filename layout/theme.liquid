@@ -32,7 +32,7 @@
   {% if settings.enable_shopify_review_comments %}
     <link rel="preconnect dns-prefetch" href="https://productreviews.shopifycdn.com" />
   {% endif %}
-
+  {{ 'discount.css' | asset_url | stylesheet_tag }}
   {{ 'fancybox.css' | asset_url | stylesheet_tag }}
   <!-- Stylesheets for Flex "2.0.7" -->
   {{ 'styles.scss.css' | asset_url | stylesheet_tag }}
