@@ -131,24 +131,26 @@
                   </div>
 
                 </div>
-
                 <div class="cart__price">
                   {% if item.line_level_discount_allocations.size < 1 %}
-                  <p>
-                    {% if item.original_price > 0 %}
-                      <span class="money {% if item.original_price < item.variant.compare_at_price %}sale{% endif %}">
+                    <p>
+                       <span class = "discount_price"></span>
+                      {% if item.original_price > 0 %}
+                          <span class="money linethrough{% if item.original_price < item.variant.compare_at_price %}sale{% endif %}">
                         {% render 'price-element', price: item.original_price %}
-                      </span>
-                      {% if item.original_price < item.variant.compare_at_price %}
-                        <span class="money was-price">
-                          {% render 'price-element', price: item.variant.compare_at_price %}
-                        </span>
-                      {% endif %}
-                    {% else %}
-                      {{ settings.free_price_text }}
-                    {% endif %}
-                  </p>
+                          </span>
+                          {% if item.original_price < item.variant.compare_at_price %}
+                            <span class="money was-price">
+                              {% render 'price-element', price: item.variant.compare_at_price %}
+                            </span>
+                          {% endif %}
+                        {% else %}
+                          {{ settings.free_price_text }}
+                        {% endif %}
+                    </p>
                   {% endif %}
+                      
+                    
                   {% comment %} Discounts for line items {% endcomment %}
                   {% if item.line_level_discount_allocations.size > 0 %}
                     <p class="sale">
@@ -157,7 +159,7 @@
                       </span>
                     </p>
                     {% if item.original_line_price > item.final_line_price %}
-                      <s class="original-price">
+                      <s>
                         <span class="money">
                           {% render 'price-element', price: item.original_price %}
                         </span>
@@ -170,7 +172,8 @@
                     {% endfor %}
                   {% endif %}
                 </div>
-
+      
+               
                 {% if section.settings.display_product_quantity_cart %}
                   <div class="cart__quantity">
                     <div class="purchase-details__quantity product-quantity-box" data-line-item-key={{ forloop.index }}>
@@ -185,9 +188,11 @@
                 {% endif %}
 
                 <div class="cart__total">
+                  
                   <p>
+                      <span class="discount_total"></span>
                     {% if item.final_line_price > 0 %}
-                      <span class="money">
+                      <span class="money original_total">
                         {% render 'price-element', price: item.final_line_price %}
                       </span>
                     {% else %}
@@ -198,9 +203,9 @@
               </div>
               <div class="cart__remove">
                 <a class="cart__remove-btn is-inline-flex is-align-center is-justify-center ajax-cart__delete" data-cart-page-delete data-cart-item-key="{{ item.key }}" data-line-item-key={{ forloop.index }} href="{{ routes.cart_change_url }}?line={{ forloop.index }}&amp;quantity=0" title="{{ 'cart.general.remove' | t }}" >
-                  <button class="close" aria-label="close">
+                  <span class="close" aria-label="close">
                     {% render 'icon', name: 'x' %}
-                  </button>
+                  </span>
                 </a>
               </div>
             </div>
@@ -227,7 +232,8 @@
                   <p class="h3">{{ 'cart.general.subtotal' | t }}:</p>
                 </div>
                 <p class="h3 cart__subtotal">
-                  <span class="money">
+                    <span class="discount_subtotal"></span>
+                  <span class="money original_subtotal">
                     {% render 'price-element', price: cart.total_price %}
                   </span>
                 </p>
@@ -287,8 +293,12 @@
                         </div>
                       {% endif %}
                     </div>
+                     
                     <div class="is-flex is-align-center is-justify-end cart__buttons">
+                      
                       <div class="cart__checkout">
+                           {% include 'plus_cart_discount_code', discountFieldId: "devPromo" %}
+                            <br>
                         <button type="submit" class="button add_to_cart checkout" id="checkout" name="checkout" value="{{ 'cart.general.checkout' | t }}">
                           {% if settings.show_lock_icon %}
                             {% render 'icon', name: 'lock' %}
@@ -400,6 +410,8 @@
     }
   }
 </script>
+
+<script src="{{ 'z__jsDiscountCoupon.js' | asset_url }}"></script>
 <script src="{{ 'z__jsCart.js' | asset_url }}"></script>
 <script src="{{ 'z__jsShippingCalculator.js' | asset_url }}"></script>
 
@@ -407,7 +419,7 @@
 
 {
   "name": "Cart",
-  "class": "cart-section jsCart jsShippingCalculator",
+  "class": "cart-section jsCart jsDiscountCoupon jsShippingCalculator",
   "settings": [
     {
       "type": "checkbox",

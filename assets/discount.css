@@ -1,0 +1,94 @@
+.custom_badge {
+    font-size: 1em;
+    color:  red  !important;
+}
+.custom_req {
+    font-size: 1em;
+    color:  red  !important;
+    background-color: #f2f2f2 ;
+    border-color: black !important;
+    padding: 5px 5px  5px 15px ;
+    margin-top: 5px;
+    width : 20.2rem;
+}
+.original_price{
+    text-decoration-line: line-through;
+    opacity: 0.6;
+}
+
+.Ajax_custom_req {
+    font-size: 1em;
+    color:  red  !important;
+    background-color: #f2f2f2 ;
+    border-color: black !important;
+    padding: 5px 5px  5px 15px ;
+    margin-top: 5px;
+    width : 20.2rem ;
+    margin-left: 37px ; 
+}
+
+@media(max-width: 480px) {
+.Ajax_custom_req {
+    font-size: 1em;
+    color:  red  !important;
+    background-color: #f2f2f2 ;
+    border-color: black !important;
+    padding: 5px 5px  5px 15px ;
+    margin-top: 5px;
+    width : 16.1rem !important;
+    margin-left: 20px !important;
+}
+}
+.d-none{
+   display: none !important;
+}
+.bg-success{
+   background-color: #53BA77 !important;
+}
+.border-danger{
+  border-color: red !important;
+
+}
+.apply___discount{
+  	color: #fff !important;
+    background-color: #3d3d3d !important;
+    border-color: transparent !important;
+}
+
+.padding_to_sixteen{
+  padding: 0px 16px !important;
+}
+
+
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.2em;
+}
+.spinner-border {
+    display: inline-block !important;
+    width: 1.5rem;
+    height: 1.5rem;
+    vertical-align: text-bottom;
+    border: 0.25em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+/*     webkit-animation: .75s linear infinite spinner-border; */
+     animation-name: spin !important;
+    animation-duration: 0.75s !important;
+    animation-iteration-count: infinite !important;
+    animation-timing-function: linear !important;
+  
+}
+@-moz-keyframes spin {
+    from { -moz-transform: translateY(0%) rotate(0deg); }
+    to { -moz-transform: translateY(0%) rotate(360deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: translateY(0%) rotate(0deg); }
+    to { -webkit-transform: translateY(0%) rotate(360deg); }
+}
+@keyframes spin {
+    from {transform: translateY(0%) rotate(0deg);}
+    to {transform: translateY(0%) rotate(360deg);}
+}

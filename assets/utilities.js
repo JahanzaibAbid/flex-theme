@@ -1154,8 +1154,7 @@ Shopify.theme.quantityBox = {
 
 
     if ($el.parents('[data-line-item]').length) {
-      var _lineID = $quantityBox.data('line-item-key');
-
+      var _lineID = parseInt($quantityBox[0].dataset.lineItemKey);
       Shopify.theme.quantityBox.updateCart(_lineID, val);
     } // Call to update quantity controls
 
@@ -1163,6 +1162,7 @@ Shopify.theme.quantityBox = {
     Shopify.theme.quantityBox.updateQuantityControls($el);
   },
   updateCart: function updateCart(lineID, quantity) {
+    $("[data-line-item=\"".concat(lineID, "\"]")).find('.cart__quantity').css('opacity', '0.5');
     $('.quantity-warning').removeClass('animated bounceIn');
     $.ajax({
       type: 'POST',
@@ -1214,6 +1214,7 @@ Shopify.theme.quantityBox = {
         }
 
         if (Shopify.theme.jsCart) {
+          
           Shopify.theme.jsCart.updateView(cart, lineID);
         }
       },

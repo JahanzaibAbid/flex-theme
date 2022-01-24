@@ -47,6 +47,139 @@ Shopify.theme.jsAjaxCart = {
       Shopify.theme.jsAjaxCart.hideMiniCart();
       return false;
     });
+        $(document).on('click', '.ajaxcart-discount-id', function (e){
+      e.preventDefault();
+        
+      var promoid = $(this).siblings("#ajaxdevPromo").val();
+     	$(".ajaxmain_discount_content").addClass("d-none");
+		$(".ajaxdiscount-message").addClass("d-none");
+        $(".ajaxalert-message").addClass("d-none");
+        $(".ajaxcart-discount-id").addClass("d-none");
+        $(".ajaxloader_button").removeClass("d-none");
+                                                              
+     	$.ajax({
+        type: "POST",
+  		url: "/cart",
+        success: function(data, textstatus, jqxhr){
+           Shopify.theme.jsAjaxCart.MakeRequestToApp(promoid,JSON.stringify(data));
+                                  
+        },
+        error: function(data){
+          $(".ajaxcart-discount-id").removeClass("d-none"); 
+          $(".ajaxloader_button").addClass("d-none");  
+        },
+        
+      });                                                                 
+    });
+  },
+    MakeRequestToApp : function MakeRequestToApp(promoid,cart_data){
+    
+        $.ajax({      
+         type: "POST",
+         //url: `https://lunestelle-devel-discount-app.herokuapp.com/discount_api?shop_name=lunastelle-devel&coupen_code=${promoid}`,
+         url: `http://localhost:3000/discount_api?shop_name=lunastelle-devel&coupen_code=${promoid}`,
+         url: `https://discount-shopify-app.herokuapp.com/discount_api?shop_name=lunastelle-devel&coupen_code=${promoid}`,
+         data: {cart_data: cart_data},
+         success: function(data, textstatus, jqxhr){
+         $(".ajaxcart-discount-id").removeClass("d-none"); 
+         $(".ajaxloader_button").addClass("d-none"); 
+         if(data["success"] == true){
+           
+          Shopify.theme.jsAjaxCart.ShowDiscount(data["response"]);
+           
+         }
+            else if(data["success"] == "requirementfalse")
+            {
+              $(".ajaxcart-discount-id").removeClass("d-none"); 
+              $(".ajaxloader_button").addClass("d-none");
+              $(".ajaxdiscount-message").addClass("d-none");
+              $(".ajaxalert-message").removeClass("d-none");
+              $(".ajaxalert-message").removeClass("bg-success");
+              $(".ajaxalert-message").addClass("Ajax_custom_req");
+              $(".ajaxalert-message").text(data["response"]);
+              $(".ajax-total-price").removeClass("original_price");
+              $(".ajax-discount-price").addClass("d-none");
+              $(".ajax-original-subtotal").removeClass("d-none");
+              $(".ajax-discount-subtotal").addClass("d-none");
+            }
+         else{
+               $(".ajaxcart-discount-id").removeClass("d-none"); 
+               $(".ajaxloader_button").addClass("d-none"); 
+               $(".ajaxalert-message").addClass("d-none");
+               $(".ajaxdiscount-message").removeClass("d-none");
+               $(".ajaxdiscount-message").removeClass("bg-success");
+               $(".ajaxdiscount-message").addClass("custom_badge");
+               $(".ajaxdiscount-message").text("Enter a Valid discount code");
+               $(".ajax-total-price").removeClass("original_price");
+               $(".ajax-discount-price").addClass("d-none");
+               $(".ajax-original-subtotal").removeClass("d-none");
+               $(".ajax-discount-subtotal").addClass("d-none");
+             }
+                    },
+        error: function(data){
+          console.log("error", data);
+          $(".ajaxcart-discount-id").removeClass("d-none"); 
+          $(".ajaxloader_button").addClass("d-none"); 
+          $(".ajaxalert-message").addClass("d-none");
+		  $(".ajaxdiscount-message").removeClass("d-none");
+          $(".ajaxdiscount-message").removeClass("bg-success");
+          $(".ajaxdiscount-message").addClass("custom_badge");
+          $(".ajaxdiscount-message").text("Enter a Valid discount code");
+          $(".ajax-total-price").removeClass("original_price");
+          $(".ajax-discount-price").addClass("d-none");
+          $(".ajax-original-subtotal").removeClass("d-none");
+          $(".ajax-discount-subtotal").addClass("d-none");
+        },
+        
+      })
+
+},
+      ShowDiscount : function ShowDiscount(response)
+    {
+      if (response["coupen_code"] != undefined){
+        Shopify.theme.jsAjaxCart.ShowSpecificDiscount(response);
+
+      }
+
+     else
+     {
+
+       $(".ajaxmain_discount_content").removeClass("d-none");
+      $(".ajaxsubtotal").text("$"+response["cart_current_price"].toFixed(2)+" "+response["currency"]);
+       if (response["calculated_discount_amount"] == "Free Shipping"){
+        $(".ajaxdiscountpercent").text(response["calculated_discount_amount"]);
+       }
+       else
+       {
+         $(".ajaxdiscountpercent").text("- $"+response["calculated_discount_amount"].toFixed(2)+" "+response["currency"]);
+       }
+        $(".ajaxtotal").text("$"+response["amount_after_discount"].toFixed(2)+" "+response["currency"]);
+     }
+    },
+   ShowSpecificDiscount : function ShowSpecificDiscount(response)
+  {
+    var collection_detail = response["Collection_discount_prices"];
+    var currentItems = $('.ajax-cart__product');
+     for (var j =0; j<currentItems.length; j++){
+       var item = currentItems[j];
+       for (var i =0; i<collection_detail.length; i++){
+       var product =  collection_detail[i];
+         if (item.attributes[1].value == product["product_key"]){
+             var lineID = j + 1 ;
+            var itemTotal =  ("$"+product["item_total_price"].toFixed(2)+" "+response["currency"]); 
+           if (product["item_original_price"] == undefined){
+           $("[data-line-item=\"".concat(lineID, "\"]")).find('.ajax-total-price').addClass("original_price");
+           $("[data-line-item=\"".concat(lineID, "\"]")).find('.ajax-discount-price').removeClass("d-none");
+           $("[data-line-item=\"".concat(lineID, "\"]")).find('.ajax-discount-price').text(itemTotal);
+         } 
+        }  
+   }
+     }
+    
+       var sub_total = ("$"+response["cart_subtotal"].toFixed(2)+" "+response["currency"]);
+       $('.ajax-original-subtotal').addClass("d-none");
+       $('.ajax-discount-subtotal').removeClass("d-none");
+       $('.ajax-discount-subtotal').text(sub_total);
   },
   showMiniCartOnHover: function showMiniCartOnHover() {
     var $el = $('[data-ajax-cart-trigger]');
